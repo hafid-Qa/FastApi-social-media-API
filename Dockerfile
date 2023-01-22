@@ -1,11 +1,14 @@
-FROM python:3.8-slim-buster
+FROM python:latest
 
+# set the working directory
 WORKDIR /app
-COPY requirements.txt requirements.txt
 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install python3-tk -y
-RUN pip install -r requirements.txt
+# install dependencies
+COPY ./requirements.txt /app
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY . .
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+# copy the scripts to the folder
+COPY . /app
+
+# start the server
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
