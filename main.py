@@ -2,6 +2,7 @@ from typing import Optional
 from fastapi import FastAPI
 from fastapi.params import Body
 from pydantic import BaseModel
+from random import randrange
 
 
 app = FastAPI()
@@ -30,6 +31,7 @@ def get_posts():
 # title str, content str
 @app.post("/posts")
 def create_post(post: Post):
-    my_posts.append(post.dict())  # covert pydantic model to dict
-
-    return {"msg": "post created successfully"}
+    post_dict = post.dict()  # covert pydantic model to dict
+    post_dict["id"] = randrange(0, 100000)
+    my_posts.append(post_dict)
+    return {"data": post_dict}
