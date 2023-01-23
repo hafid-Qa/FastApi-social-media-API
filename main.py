@@ -24,6 +24,12 @@ def find_post(id):
             return post
 
 
+def find_index_post(id):
+    for i, post in enumerate(my_posts):
+        if post["id"] == id:
+            return i
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello Wor"}
@@ -53,3 +59,11 @@ def get_post(id: int):  # perform validation and convert id to int at the same t
         # return {"msg": f"post with id:{id} Not Found"}
         # second way to handle errors
     return {"data": post}
+
+
+@app.delete("/posts/{id}")
+def delete_post(id: int):
+    # find index of the id
+    index = find_index_post(id)
+    my_posts.pop(index)
+    return {"message": "deleted post successfully"}
