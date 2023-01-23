@@ -32,7 +32,7 @@ def find_index_post(id):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello Wor"}
+    return {"message": "Hello World"}
 
 
 @app.get("/posts")
