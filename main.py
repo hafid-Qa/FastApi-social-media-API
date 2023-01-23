@@ -61,9 +61,9 @@ def get_post(id: int):  # perform validation and convert id to int at the same t
     return {"data": post}
 
 
-@app.delete("/posts/{id}")
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
     # find index of the id
     index = find_index_post(id)
     my_posts.pop(index)
-    return {"message": "deleted post successfully"}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
