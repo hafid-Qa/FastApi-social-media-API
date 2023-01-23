@@ -83,9 +83,9 @@ def get_post(id: int):  # perform validation and convert id to int at the same t
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
     cursor.execute("""DELETE FROM posts WHERE id= %s RETURNING *""", (str(id),))
-    post = cursor.fetchone()
+    deleted_post = cursor.fetchone()
     conn.commit()
-    if post == None:
+    if deleted_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id:{id} Not Found")
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -93,10 +93,17 @@ def delete_post(id: int):
 
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
-    index = find_index_post(id)
-    if index == None:
+    cursor.execute(
+        """UPDATE posts SET title=%s , content= %s, published= %s WHERE id=%s RETURNING *""",
+        (
+            post.title,
+            post.content,
+            post.published,
+            str(id),
+        ),
+    )
+    updated_post = cursor.fetchone()
+    conn.commit()
+    if post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id:{id} Not Found")
-    post_dict = post.dict()
-    post_dict["id"] = id
-    my_posts[index] = post_dict
-    return {"data": post_dict}
+    return {"data": updated_post}
