@@ -58,8 +58,6 @@ def get_posts():
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
     # post_dict = post.dict()  # covert pydantic model to dict
-    # post_dict["id"] = randrange(0, 100000)
-    # my_posts.append(post_dict)
     cursor.execute(
         """INSERT INTO posts(title,content,published) VALUES(%s,%s,%s) RETURNING *;""",
         (post.title, post.content, post.published),
@@ -71,7 +69,8 @@ def create_post(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id: int):  # perform validation and convert id to int at the same time
-    post = find_post(id)
+    cursor.execute("""SELECT * FROM posts WHERE id= %s""", (str(id),))
+    post = cursor.fetchone()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id:{id} Not Found")
         # one way to handling errors
