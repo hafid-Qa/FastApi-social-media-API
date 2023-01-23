@@ -63,7 +63,10 @@ def get_post(id: int):  # perform validation and convert id to int at the same t
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
+
     # find index of the id
     index = find_index_post(id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id:{id} Not Found")
     my_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
