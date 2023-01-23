@@ -49,7 +49,7 @@ async def root():
 
 @app.get("/posts")
 def get_posts():
-    cursor.execute("SELECT * FROM posts;")
+    cursor.execute("""SELECT * FROM posts;""")
     posts = cursor.fetchall()
     return {"data": posts}
 
@@ -57,10 +57,16 @@ def get_posts():
 # title str, content str
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
-    post_dict = post.dict()  # covert pydantic model to dict
-    post_dict["id"] = randrange(0, 100000)
-    my_posts.append(post_dict)
-    return {"data": post_dict}
+    # post_dict = post.dict()  # covert pydantic model to dict
+    # post_dict["id"] = randrange(0, 100000)
+    # my_posts.append(post_dict)
+    cursor.execute(
+        """INSERT INTO posts(title,content,published) VALUES(%s,%s,%s) RETURNING *;""",
+        (post.title, post.content, post.published),
+    )
+    post = cursor.fetchone()
+    conn.commit()
+    return {"data": post}
 
 
 @app.get("/posts/{id}")
