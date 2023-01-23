@@ -14,6 +14,9 @@ class Post(BaseModel):
     rating: Optional[int] = None  # set default to none
 
 
+my_posts = [{"id": 1, "title": "post 1", "content": "content 1"}, {"id": 2, "title": "post 2", "content": "content 2"}]
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello Wor"}
@@ -21,11 +24,12 @@ async def root():
 
 @app.get("/posts")
 def get_posts():
-    return {"data": "bunch of posts"}
+    return {"data": my_posts}
 
 
 # title str, content str
-@app.post("/posts/new")
-def create_post(new_post: Post):
-    print(new_post.published)
-    return f"title: {new_post.title} content: {new_post.content}"
+@app.post("/posts")
+def create_post(post: Post):
+    my_posts.append(post.dict())  # covert pydantic model to dict
+
+    return {"msg": "post created successfully"}
