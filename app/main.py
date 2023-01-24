@@ -34,27 +34,14 @@ while True:
 my_posts = [{"id": 1, "title": "post 1", "content": "content 1"}, {"id": 2, "title": "post 2", "content": "content 2"}]
 
 
-def find_post(id):
-    for post in my_posts:
-        if post["id"] == id:
-            return post
-
-
-def find_index_post(id):
-    for i, post in enumerate(my_posts):
-        if post["id"] == id:
-            return i
-
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 
 @app.get("/posts")
-def get_posts():
-    cursor.execute("""SELECT * FROM posts;""")
-    posts = cursor.fetchall()
+def get_posts(db: Session = Depends(get_db)):
+    posts = db.query(models.Post).all()
     return {"data": posts}
 
 
