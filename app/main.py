@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
@@ -33,7 +33,7 @@ async def root():
     return "to see documentation open: http://localhost:8000/docs "
 
 
-@app.get("/posts", response_model=schemas.PostResponse)
+@app.get("/posts", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
     return posts
@@ -48,7 +48,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 
-@app.get("/posts/{id}")
+@app.get("/posts/{id}", response_model=schemas.PostResponse)
 def get_post(id: int, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if not post:
@@ -66,7 +66,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/posts/{id}")
+@app.put("/posts/{id}", response_model=schemas.PostResponse)
 def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
     updated_post = post_query.first()
