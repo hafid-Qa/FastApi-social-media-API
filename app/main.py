@@ -47,15 +47,12 @@ def get_posts(db: Session = Depends(get_db)):
 
 # title str, content str
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post):
-    # post_dict = post.dict()  # covert pydantic model to dict
-    cursor.execute(
-        """INSERT INTO posts(title,content,published) VALUES(%s,%s,%s) RETURNING *;""",
-        (post.title, post.content, post.published),
-    )
-    post = cursor.fetchone()
-    conn.commit()
-    return {"data": post}
+def create_post(post: Post, db: Session = Depends(get_db)):
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return {"data": new_post}
 
 
 @app.get("/posts/{id}")
