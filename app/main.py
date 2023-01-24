@@ -6,19 +6,12 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
-
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True  # set default to True
-    # rating: Optional[int] = None  # set default to none
 
 
 while True:
@@ -36,7 +29,8 @@ my_posts = [{"id": 1, "title": "post 1", "content": "content 1"}, {"id": 2, "tit
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    # return {"message": "Hello World"}
+    return "to see documentation open: http://localhost:8000/docs "
 
 
 @app.get("/posts")
@@ -46,7 +40,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post, db: Session = Depends(get_db)):
+def create_post(post: schemas.Post, db: Session = Depends(get_db)):
     new_post = models.Post(**post.dict())
     db.add(new_post)
     db.commit()
@@ -73,7 +67,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: schemas.Post, db: Session = Depends(get_db)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
     updated_post = post_query.first()
     if updated_post == None:
