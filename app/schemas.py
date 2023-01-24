@@ -39,4 +39,4 @@ class UserResponse(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    passwords: str
+    password: str
