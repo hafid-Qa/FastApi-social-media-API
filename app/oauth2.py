@@ -1,5 +1,6 @@
-from jose import JWSError, jwt
+from jose import JWTError, jwt
 from datetime import datetime, timedelta
+from . import schemas
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -15,3 +16,14 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expiry_time})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def verify_access_token(token: str, credentials_exception):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithm=ALGORITHM)
+        id: str = payload.get("user_id")
+        if id is None:
+            raise credentials_exception
+        token_data = schemas.TokenData(id=id)
+    except JWTError:
+        raise credentials_exception
