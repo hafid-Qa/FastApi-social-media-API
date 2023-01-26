@@ -8,10 +8,10 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 @router.get("/", response_model=List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    print(current_user.email)
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10):
+
     # returns all posts regardless of current user
-    posts = db.query(models.Post).all()
+    posts = db.query(models.Post).limit(limit).all()
     # to return all posts created by a current user
     # posts = db.query(models.Post).filter(models.Post.user_id == current_user.id).all()
     return posts
