@@ -27,4 +27,8 @@ def vote(
         db.commit()
         return {"message": f"successfully voted for post {vote.post_id}"}
     else:
-        print("Vote")
+        if not found_vote:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Vote not found")
+        vote_query.delete(synchronize_session=False)
+        db.commit()
+        return {"message": "Vote deleted successfully"}
