@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from .config import settings
 
 # only needed incase file main_with_psycop is the main file
 # import psycopg2
@@ -8,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 # import time
 
 # 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
-SQLALCHEMY_DATABASE_URL = "postgresql://@localhost/fast_api_dev"
+SQLALCHEMY_DATABASE_URL = f"postgresql://@{settings.database_hostname}/{settings.database_name}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
