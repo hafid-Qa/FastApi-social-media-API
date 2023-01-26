@@ -57,4 +57,4 @@ class TokenData(BaseModel):
 
 class Vote(BaseModel):
     post_id: int
-    dir: conint(Literal[0, 1])
+    dir: Literal[0, 1]
