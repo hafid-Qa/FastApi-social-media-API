@@ -15,7 +15,12 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"), onupdate=text("now()"))
-    posts = relationship("Post", back_populates="user", cascade="all, delete-orphan")
+    posts = relationship(
+        "Post",
+        back_populates="user",
+        cascade="all,delete",
+        passive_deletes=True,
+    )
 
 
 class Post(Base):
@@ -26,5 +31,5 @@ class Post(Base):
     published = Column(Boolean, server_default="True", nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"), onupdate=text("now()"))
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="posts")
