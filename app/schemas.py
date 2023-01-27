@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Optional, Literal
 
 
-
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -45,6 +44,13 @@ class PostResponse(PostBase):
     class Config:
         orm_mode = True
 
+
+class PostWithVoteResponse(BaseModel):
+    Post: PostResponse
+    votes: int
+
+    class Config:
+        orm_mode = True
 
 
 class Token(BaseModel):
