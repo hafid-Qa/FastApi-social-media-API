@@ -47,9 +47,19 @@ def create_post(
     return new_post
 
 
-@router.get("/{id}", response_model=schemas.PostResponse)
+# schemas.PostResponse
+@router.get("/{id}", response_model=schemas.PostWithVoteResponse)
 def get_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    post = db.query(models.Post).filter(models.Post.id == id).first()
+    # without vote
+    # post = db.query(models.Post).filter(models.Post.id == id).first()
+    # with vote
+    post = (
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Post.id == models.Vote.post_id, isouter=True)
+        .group_by(models.Post.id)
+        .filter(models.Post.id == id)
+        .first()
+    )
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id:{id} Not Found")
     # return only post created by current user
