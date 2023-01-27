@@ -6,6 +6,7 @@ from typing import Optional, Literal
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+    phone_number: Optional["str"]
 
 
 class UserResponse(BaseModel):
