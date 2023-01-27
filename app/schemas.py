@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, Literal
-from pydantic.types import conint
+
 
 
 class UserCreate(BaseModel):
