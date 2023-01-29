@@ -15,9 +15,9 @@ services:
     image: postgres
     env_file:
       - "./.env"
-    # environment:
-    #   - POSTGRES_PASSWORD=1
-    #   - POSTGRES_DB=fast_api_dev
+    environment:
+      - POSTGRES_PASSWORD=1
+      - POSTGRES_DB=fast_api_dev
     volumes:
       - postgres-db:/var/lib/postgresql/data
 
