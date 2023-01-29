@@ -1,4 +1,4 @@
-# Social media API service
+# Social media API 
 
 Built with FastAPI and SQLAlchemy 
 
