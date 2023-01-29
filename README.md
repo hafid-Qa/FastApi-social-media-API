@@ -26,7 +26,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES=
 
 ```
 #Install  packages
-
 pip install -r requirements.txt
 
 #Run a server 
