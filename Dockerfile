@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # copy the scripts to the folder
 COPY . /app
 
-EXPOSE 8000
+
 # start the server
-CMD ["uvicorn", "app.main:app", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

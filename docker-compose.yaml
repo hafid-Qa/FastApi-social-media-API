@@ -1,9 +1,8 @@
 services:
-  app:
+  api:
     build: .
-    container_name: simple-python-server
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    container_name: fast-api-social-api
     ports:
       - 8000:8000
-    volumes:
-      - .:/app
+    env_file:
+      - ./.env
