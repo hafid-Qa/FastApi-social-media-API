@@ -23,3 +23,7 @@ def test_unauthorized_user_get_one_posts(client, test_posts):
     assert res.json().get("detail") == "Not authenticated"
 
 
+def test_get_one_posts_not_exit(authorized_client, test_posts):
+    res = authorized_client.get(f"/posts/100")
+    assert res.status_code == 404
+    assert res.json().get("detail") == "Post with id:100 Not Found"
