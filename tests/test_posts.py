@@ -27,3 +27,13 @@ def test_get_one_posts_not_exit(authorized_client, test_posts):
     res = authorized_client.get(f"/posts/100")
     assert res.status_code == 404
     assert res.json().get("detail") == "Post with id:100 Not Found"
+
+
+def test_get_one(authorized_client, test_posts, test_user):
+    res = authorized_client.get(f"/posts/{test_posts[0].id}")
+    post = schemas.PostWithVoteResponse(**res.json())
+    assert res.status_code == 200
+    assert post.Post.id == test_posts[0].id
+    assert post.Post.title == test_posts[0].title
+    assert post.Post.content == test_posts[0].content
+    assert post.Post.user_id == test_user["id"]
