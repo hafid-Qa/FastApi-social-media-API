@@ -90,3 +90,9 @@ def test_delete_post_not_exit(authorized_client, test_posts):
     res = authorized_client.delete("/posts/100")
     assert res.status_code == 404
     assert res.json().get("detail") == "Post with id:100 Not Found"
+
+
+def test_delete_other_user_post(authorized_client, test_posts, test_user):
+    res = authorized_client.delete(f"/posts/{test_posts[2].id}")
+    assert res.status_code == 403
+    assert res.json().get("detail") == "Not authorized to perform this action"
