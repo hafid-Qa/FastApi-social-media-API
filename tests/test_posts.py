@@ -1,5 +1,5 @@
-from typing import List, Optional
 from app import schemas
+import pytest
 
 
 def test_gel_all_posts(authorized_client, test_posts):
@@ -37,3 +37,22 @@ def test_get_one(authorized_client, test_posts, test_user):
     assert post.Post.title == test_posts[0].title
     assert post.Post.content == test_posts[0].content
     assert post.Post.user_id == test_user["id"]
+
+
+@pytest.mark.parametrize(
+    "title ,content,published",
+    [
+        ("title 1", "content 1", True),
+        ("title 2", "content 2", True),
+        ("title 3", "content 3", False),
+    ],
+)
+def test_create_post(authorized_client, test_user, test_posts, title, content, published):
+    res = authorized_client.post("/posts/", json={"title": title, "content": content, "published": published})
+
+    created_post = schemas.PostResponse(**res.json())
+    assert res.status_code == 201
+    assert created_post.title == title
+    assert created_post.content == content
+    assert created_post.published == published
+    assert created_post.user_id == test_user["id"]
