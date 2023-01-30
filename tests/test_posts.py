@@ -9,3 +9,8 @@ def test_gel_all_posts(authorized_client, test_posts):
     for post in posts:
         schemas.PostWithVoteResponse(**post)
     assert res.status_code == 200
+
+
+def test_unauthorized_user_get_all_posts(client, test_posts):
+    res = client.get("/posts/")
+    assert res.status_code == 401
