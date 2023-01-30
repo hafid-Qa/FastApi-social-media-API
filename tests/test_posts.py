@@ -76,6 +76,11 @@ def test_unauthorized_user_get_create_posts(client, test_posts):
 
 
 def test_unauthorized_user_delete_posts(client, test_posts):
-    res = client.delete("/posts/{test_posts[0].id}")
+    res = client.delete(f"/posts/{test_posts[0].id}")
     assert res.status_code == 401
     assert res.json().get("detail") == "Not authenticated"
+
+
+def test_delete_post(authorized_client, test_user, test_posts):
+    res = authorized_client.delete(f"/posts/{test_posts[0].id}")
+    assert res.status_code == 204
