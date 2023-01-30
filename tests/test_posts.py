@@ -67,3 +67,8 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
     assert created_post.content == "test content"
     assert created_post.published == True
     assert created_post.user_id == test_user["id"]
+
+def test_unauthorized_user_get_create_posts(client, test_posts):
+    res = client.post("/posts/", json={"title": "test title", "content": "test content"})
+    assert res.status_code == 401
+    assert res.json().get("detail") == "Not authenticated"
