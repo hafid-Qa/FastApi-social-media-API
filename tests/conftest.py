@@ -43,7 +43,7 @@ def client(session):
 
 @pytest.fixture
 def test_user(client):
-    user_data = {"email": "test@example.com", "password": "testpassword", "phone_number": "01"}
+    user_data = {"email": "test@example.com", "password": "correctpassword", "phone_number": "01"}
     res = client.post("/users/", json=user_data)
     assert res.status_code == 201
     new_user = res.json()
