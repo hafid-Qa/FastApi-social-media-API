@@ -81,6 +81,12 @@ def test_unauthorized_user_delete_posts(client, test_posts):
     assert res.json().get("detail") == "Not authenticated"
 
 
-def test_delete_post(authorized_client, test_user, test_posts):
+def test_delete_post(authorized_client, test_posts):
     res = authorized_client.delete(f"/posts/{test_posts[0].id}")
     assert res.status_code == 204
+
+
+def test_delete_post_not_exit(authorized_client, test_posts):
+    res = authorized_client.delete("/posts/100")
+    assert res.status_code == 404
+    assert res.json().get("detail") == "Post with id:100 Not Found"
