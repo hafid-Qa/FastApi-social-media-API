@@ -2,6 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from .routers import post, user, auth, vote
 from fastapi.middleware.cors import CORSMiddleware
+from .staticfiles_auth import AuthStaticFiles
+from .config import settings
 
 # models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -13,6 +15,11 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+app.mount(
+    "/files",
+    AuthStaticFiles(directory=f"{settings.BASE_DIR}/files"),
+    name="static",
 )
 
 
