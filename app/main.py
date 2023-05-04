@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from . import models
 from .database import engine
@@ -26,3 +27,11 @@ app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
+
+
+def main():
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, access_log=True, reload=True)
+
+
+if __name__ == "__main__":
+    main()

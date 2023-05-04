@@ -9,11 +9,11 @@ from app.config import settings
 from app.database import get_db
 
 
-SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
-)
+# SQLALCHEMY_DATABASE_URL = (
+#     f"postgresql://@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
+# )
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(settings.sqlalchemy_database_uri_test)
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
