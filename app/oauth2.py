@@ -1,17 +1,25 @@
-from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from . import schemas, database, models
-from fastapi import Depends, status, HTTPException
+
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from . import database, models, schemas
 from .config import settings
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+from typing import Annotated
 
 # to get a string like this run:
 # openssl rand -hex 32
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+
+db = Annotated[Session, Depends(database.get_db)]
+token = Annotated[str, Depends(oauth2_scheme)]
 
 
 def create_access_token(data: dict):
@@ -35,7 +43,7 @@ def verify_access_token(token: str, credentials_exception):
     return token_data
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_current_user(token: token, db: db):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=f"Could not validate credentials",
@@ -43,5 +51,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
 
     token = verify_access_token(token, credentials_exception)
-    user = db.query(models.User).filter(models.User.id == token.id).first()
+    user = select(models.User).where(models.User.id == token.id)
+    user = db.execute(user).scalars().first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
