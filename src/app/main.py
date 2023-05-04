@@ -26,8 +26,7 @@ app.mount(
 
 @app.get("/")
 async def root():
-    # return "to see documentation open: http://localhost:8000/docs or /redoc"
-    return f"{settings.BASE_DIR}/files"
+    return "to see documentation open: http://localhost:8000/docs or /redoc"
 
 
 app.include_router(post.router)
