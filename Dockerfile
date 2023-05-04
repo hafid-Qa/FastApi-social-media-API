@@ -10,6 +10,9 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # copy the scripts to the folder
 COPY . /app
 
-
-# start the server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# copy scripts folder
+COPY ./scripts /scripts/
+RUN chmod -R +x /scripts
+ENV PATH="/scripts:${PATH}"
+# Set the command to start the FastAPI application
+CMD ["entrypoint.sh"]

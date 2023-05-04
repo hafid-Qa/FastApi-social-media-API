@@ -1,18 +1,20 @@
-version: "3"
+version: "3.8"
 services:
   api:
     build: .
     depends_on:
-      - postgres
+      - db
+      - db_test
     container_name: fast-api-social-api
     ports:
       - 8000:8000
-    environment:
-      DATABASE_URL: postgres://postgres@db
-    env_file:
-      - "./.env"
+    # environment:
+    #   DATABASE_URL: postgres://postgres@db
+    env_file: .env
+    command: >
+      bash -c "wait_for db:5432 db_test:5432 && sleep 30 && entrypoint.sh"
 
-  postgres:
+  db:
     image: postgres:15.2-alpine
     container_name: fast-api-social-db
     restart: always
@@ -24,6 +26,15 @@ services:
       - 5432:5432
     volumes:
       - ./data/postgres-db:/var/lib/postgresql/data
+
+  db_test:
+    image: postgres:15.2-alpine
+    container_name: fast-api-social-db_test
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_DB=${DATABASE_NAME}_test
 
 volumes:
   postgres-db:
