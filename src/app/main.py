@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
-from .routers import post, user, auth, vote
 from fastapi.middleware.cors import CORSMiddleware
-from .staticfiles_auth import AuthStaticFiles
+
 from .config import settings
+from .routers import auth, post, user, vote
+from .staticfiles_auth import AuthStaticFiles
 
 # models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -18,14 +19,15 @@ app.add_middleware(
 )
 app.mount(
     "/files",
-    AuthStaticFiles(directory=f"{settings.BASE_DIR}/files"),
+    AuthStaticFiles(directory="/files"),
     name="static",
 )
 
 
 @app.get("/")
 async def root():
-    return "to see documentation open: http://localhost:8000/docs or /redoc"
+    # return "to see documentation open: http://localhost:8000/docs or /redoc"
+    return f"{settings.BASE_DIR}/files"
 
 
 app.include_router(post.router)

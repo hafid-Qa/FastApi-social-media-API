@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from fastapi import HTTPException, Request, status
 from fastapi.staticfiles import StaticFiles
 
-from .config import settings
 from .database import get_db
 from .oauth2 import get_current_user
 
@@ -23,7 +22,7 @@ def db_scope():
 
 
 async def verify_user(request: Request):
-    try:
+    # try:
         token = request.headers.get("Authorization")
         if not token or not token.startswith("Bearer "):
             raise HTTPException(
@@ -34,11 +33,11 @@ async def verify_user(request: Request):
 
         token = token.split("Bearer ")[1]
         with db_scope() as db:
-            get_current_user(token=str(token), db=db, token_helper=TokenHelper(settings))
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error")
+            get_current_user(token=str(token), db=db)
+    # except HTTPException as e:
+    #     raise e
+    # except Exception as e:
+    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error")
 
 
 class AuthStaticFiles(StaticFiles):

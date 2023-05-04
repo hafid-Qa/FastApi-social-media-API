@@ -4,11 +4,11 @@ FROM python:3.9.16-slim-buster
 WORKDIR /app
 
 # install dependencies
-COPY ./requirements.txt /app
+COPY ./src/requirements.txt /app
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 # copy the scripts to the folder
-COPY . /app
+COPY ./src /app
 
 # copy scripts folder
 COPY ./scripts /scripts/

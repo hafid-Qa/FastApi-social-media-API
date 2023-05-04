@@ -6,6 +6,8 @@ services:
       - db
       - db_test
     container_name: api-social
+    volumes:
+      - ./files:/files:rw
     ports:
       - 8000:8000
     # environment:
