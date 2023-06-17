@@ -13,6 +13,14 @@ services:
     env_file: .env
     command: >
       bash -c "wait_for db:5432 db_test:5432 && sleep 30 && entrypoint.sh"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: "true"
+        fluentd-retry-wait: 1s
+        fluentd-max-retries: 200
+        tag: api-social.api
 
   db:
     image: postgres:15.2-alpine
@@ -26,6 +34,14 @@ services:
       - 5432:5432
     volumes:
       - ./data/postgres-db:/var/lib/postgresql/data
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: "true"
+        fluentd-retry-wait: 1s
+        fluentd-max-retries: 200
+        tag: api-social.db
 
   db_test:
     image: postgres:15.2-alpine
@@ -44,7 +60,7 @@ services:
       - 24224:24224/udp
     volumes:
       - ./fluent.conf:/fluentd/etc/fluent.conf:ro
-      - ./src/api/log:/fluentd/log:rw
+      - ./src/logs:/fluentd/log:rw
     command: >
       /usr/bin/fluentd -c /fluentd/etc/fluent.conf -v
     networks:
@@ -56,7 +72,7 @@ services:
         fluentd-async-connect: "true"
         fluentd-retry-wait: 1s
         fluentd-max-retries: 200
-        tag: confide_vi.fluentd
+        tag: api-social.fluentd
 
 volumes:
   postgres-db:
