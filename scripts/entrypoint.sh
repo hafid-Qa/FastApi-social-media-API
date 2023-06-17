@@ -9,3 +9,5 @@ export PYTHONPATH=/src
 
 # start  app
 python3 -m app.main
+#  for offline docs
+# python3 -m app.main_offline

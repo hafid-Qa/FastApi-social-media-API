@@ -1,6 +1,9 @@
-from pydantic import BaseModel, EmailStr
+from calendar import c
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr
+from typing_extensions import Literal
 
 
 class UserCreate(BaseModel):
@@ -30,6 +33,9 @@ class PostBase(BaseModel):
     published: bool = True  # set default to True
     # rating: Optional[int] = None  # set default to none
 
+    class Config:
+        orm_mode = False
+
 
 class PostCreate(PostBase):
     pass
@@ -58,11 +64,20 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+    class Config:
+        orm_mode = True
+
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+    class Config:
+        orm_mode = True
 
 
 class Vote(BaseModel):
     post_id: int
     dir: Literal[0, 1]
+
+    class Config:
+        orm_mode = False
