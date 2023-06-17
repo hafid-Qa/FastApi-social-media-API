@@ -5,7 +5,7 @@ python-multipart==0.0.6
 alembic==1.9
 black==22.12
 Faker==18.3
-fastapi==0.97
+fastapi==0.95
 psycopg2-binary==2.9
 SQLAlchemy==2.0
 uvicorn==0.20

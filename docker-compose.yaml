@@ -33,7 +33,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./data/postgres-db:/var/lib/postgresql/data
+      - ./data/db-data:/var/lib/postgresql/data
     logging:
       driver: "fluentd"
       options:
