@@ -10,8 +10,6 @@ services:
       - ./files:/files:rw
     ports:
       - 8000:8000
-    # environment:
-    #   DATABASE_URL: postgres://postgres@db
     env_file: .env
     command: >
       bash -c "wait_for db:5432 db_test:5432 && sleep 30 && entrypoint.sh"
@@ -37,6 +35,28 @@ services:
       - POSTGRES_DB=${DATABASE_NAME}_test
       - POSTGRES_USER=${DATABASE_USERNAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+
+  fluentd:
+    container_name: fluentd
+    image: fluentd:v1.16-1
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+    volumes:
+      - ./fluent.conf:/fluentd/etc/fluent.conf:ro
+      - ./src/api/log:/fluentd/log:rw
+    command: >
+      /usr/bin/fluentd -c /fluentd/etc/fluent.conf -v
+    networks:
+      - default
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: "true"
+        fluentd-retry-wait: 1s
+        fluentd-max-retries: 200
+        tag: confide_vi.fluentd
 
 volumes:
   postgres-db:
